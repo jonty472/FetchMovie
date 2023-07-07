@@ -1,37 +1,39 @@
 ﻿using FetchMovie;
-using System.Text.Json;
-using System.Text.Json.Serialization;
+using System.Net.Http.Json;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 
-internal class Movie
-{
-    public string MovieTitle { get; set; }
-    public int ReleaseDate { get; set; }
-}
 internal class Program
 {
-    static async Task Main(string[] args)
+    // HttpClient is intended to be instantiated once per application, rather than per-use. See Remarks.
+    static readonly HttpClient client = new HttpClient();
+
+
+
+    static async Task Main()
     {
-        Console.WriteLine("What movie are you looking for: ");
-        string MovieTitle = Console.ReadLine();
-        Task<Movie> movieTask = RequestMovieAsync(MovieTitle);
-        Movie movie = await movieTask;
-        Console.WriteLine("Found movie");
-    }
 
+        using HttpResponseMessage response = await client.GetAsync("https://api.themoviedb.org/3/search/movie?api_key=4cc1b68a07fe5ba265950e85ac96cb2c&query=Oldboy&year=2003");
 
-
-    private static async Task<Movie> RequestMovieAsync(string MovieTitle)
-    {
-        Console.WriteLine("Searching for movie");
-        // use api to lookup movie
-        using HttpClient client = new HttpClient();
-        HttpResponseMessage response = await client.GetAsync("https://api.themoviedb.org/3/search/movie?api_key=4cc1b68a07fe5ba265950e85ac96cb2c&query=Oldboy&year=2003");
         response.EnsureSuccessStatusCode();
-        string requestBody = await response.Content.ReadAsStringAsync();
-        var movietitle = JsonSerializer.Deserialize<Movie>(requestBody.ToString()).Results.title;
-        // display movie details
-        Console.WriteLine($"test{movietitle}");
-        return new Movie();
+        string responseBody = await response.Content.ReadAsStringAsync();
+        
+
+        // write this into a class called GetAysncMovie();
+        Result movie = new Result();
+
+        RootObject movies = JsonConvert.DeserializeObject<RootObject>(responseBody);
+        Console.WriteLine(movies.results);
+        foreach (var property in movies.results)
+        {
+            Console.WriteLine(property.title); 
+            movie.title = property.title;
+            movie.overview = property.overview;
+            movie.id = property.id;
+            movie.genre_ids = property.genre_ids;
+            movie.release_date = property.release_date;
+            movie.vote_average = property.vote_average;
+        }
     }
 }
 
