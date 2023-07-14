@@ -22,4 +22,12 @@ public class Movie
     public bool video { get; set; }
     public float vote_average { get; set; }
     public int vote_count { get; set; }
+
+    public Movie()
+        {
+            
+        }
+
+
+
 }

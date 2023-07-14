@@ -54,11 +54,12 @@ internal class Program
         return jsonResponse;
     }
 
-    // maybe this should be in the movie class
-    public async Task<Movie> AddMovie(string movieRequest)
+    // maybe this should be in the movie class, but have the Movie instance created outside of the class
+    public async Task<Movie> AddMovie(string movieRequest, Movie movie)
     {
         var responseBody = await GetAsync(client);
-
+        
+        //remove instance creation within method and pass it in.
         Movie movie = new Movie();
         RootObject? movies = JsonConvert.DeserializeObject<RootObject?>(responseBody);
         Console.WriteLine(movies.results);
