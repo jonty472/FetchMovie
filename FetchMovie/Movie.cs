@@ -1,4 +1,4 @@
-﻿public class RootObject
+﻿internal class RootObject
 {
     public int page { get; set; }
     public List<Movie> results { get; set; }
@@ -6,7 +6,7 @@
     public int total_results { get; set; }
 }
 
-public class Movie
+internal class Movie
 {
     public bool adult { get; set; }
     public string backdrop_path { get; set; }
@@ -22,12 +22,6 @@ public class Movie
     public bool video { get; set; }
     public float vote_average { get; set; }
     public int vote_count { get; set; }
-
-    public Movie()
-        {
-            
-        }
-
 
 
 }
